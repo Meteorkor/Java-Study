@@ -11,6 +11,9 @@
 
 package com.effective.java.concurrent;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -83,5 +86,53 @@ public class EffectiveJavaConcurrentExample {
         Thread.sleep(500);
         System.out.println("Lastidx : " + idx);
 
+    }
+    
+    @Test
+    public void 항목67클라이언트메소드(){
+        ObservableSet<Integer> obSet = new ObservableSet<Integer>();
+
+        /**
+         * ConcurrentModificationException
+        
+        obSet.addObserver(new SetObserver<Integer>() {
+            public void added(ObservableSet<Integer> s, Integer e) {
+                System.out.println(e);
+                if (e == 23)
+                    s.removeObserver(this);
+            }
+        });
+        */ 
+        /*
+        데드락
+        */
+        obSet.addObserver(new SetObserver<Integer>() {
+            public void added(final ObservableSet<Integer> s, Integer e) {
+                System.out.println(e);
+                if (e == 23) {
+                    ExecutorService executor = Executors.newSingleThreadExecutor();
+                    final SetObserver<Integer> observer = this;
+                    try {
+                        executor.submit(new Runnable() {
+                            public void run() {
+                                s.removeObserver(observer);
+                            }
+                        }).get();
+                    } catch (ExecutionException ex) {
+                        throw new AssertionError(ex.getCause());
+                    } catch (InterruptedException ex) {
+                        throw new AssertionError(ex.getCause());
+                    } finally {
+                        executor.shutdown();
+                    }
+                }
+            }
+        });
+        
+        for(int idx=0;idx<30;idx++){
+            obSet.add(idx);    
+        }
+        
+        
     }
 }
