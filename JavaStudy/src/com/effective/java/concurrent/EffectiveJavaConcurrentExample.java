@@ -14,30 +14,30 @@ package com.effective.java.concurrent;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.Test;
 
 /**
- * [Concurrent] generateSerialNumber 'synchronized' 을 통한 상호배제 처리
+ * [Concurrent] generateSerialNumber 'Atomic' 을 통한 상호배제 처리
  * @author unseok.kim
  * @since 2017. 5. 31.
  */
 public class EffectiveJavaConcurrentExample {
 
-    private static int nextSerialNumber = 0;
+    private static AtomicLong nextSerialNumber = new AtomicLong(0);
 
-    public synchronized static int generateSerialNumber() {
-        return nextSerialNumber++;
+    public static long generateSerialNumber() {
+        return nextSerialNumber.getAndIncrement();
     }
 
     @Test
     public void 단일스레드테스트() {
-        for (int forIdx = 0; forIdx < 10000; forIdx++) {
-            int idx = generateSerialNumber();
-            System.out.println("idx : " + idx);
+        for (int forIdx = 0; forIdx < 100000; forIdx++) {
+            long idx = generateSerialNumber();
         }
         
-        int idx = generateSerialNumber();
+        long idx = generateSerialNumber();
         System.out.println("Lastidx : " + idx);
 
     }
@@ -45,7 +45,7 @@ public class EffectiveJavaConcurrentExample {
     @Test
     public void 멀티스레드테스트() throws InterruptedException {
         ExecutorService exService = Executors.newFixedThreadPool(1000);
-        for (int forIdx = 0; forIdx < 10000; forIdx++) {
+        for (int forIdx = 0; forIdx < 100000; forIdx++) {
             
             exService.submit(new Runnable() {
                 @Override
@@ -56,8 +56,7 @@ public class EffectiveJavaConcurrentExample {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
-                    int idx = generateSerialNumber();
-                    System.out.println("idx : " + idx);
+                    long idx= generateSerialNumber();
                 }
             });
             /*
@@ -80,7 +79,7 @@ public class EffectiveJavaConcurrentExample {
         exService.shutdown();
         exService.awaitTermination(10, TimeUnit.SECONDS);
 //        exService.shutdown();
-        int idx = generateSerialNumber();
+        long idx = generateSerialNumber();
         Thread.sleep(500);
         System.out.println("Lastidx : " + idx);
 
