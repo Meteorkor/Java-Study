@@ -11,7 +11,6 @@
 
 package com.effective.java.concurrent;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -19,14 +18,15 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 
 /**
+ * [Concurrent] generateSerialNumber 'synchronized' 을 통한 상호배제 처리
  * @author unseok.kim
  * @since 2017. 5. 31.
  */
 public class EffectiveJavaConcurrentExample {
 
-    private static volatile int nextSerialNumber = 0;
+    private static int nextSerialNumber = 0;
 
-    public static int generateSerialNumber() {
+    public synchronized static int generateSerialNumber() {
         return nextSerialNumber++;
     }
 
