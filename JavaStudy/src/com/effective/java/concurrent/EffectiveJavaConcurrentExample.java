@@ -33,7 +33,13 @@ public class EffectiveJavaConcurrentExample {
     public static long generateSerialNumber() {
         return nextSerialNumber.getAndIncrement();
     }
+    /*
+    private static volatile int nextSerialNumber = 0;
 
+    public static int generateSerialNumber() {
+        return nextSerialNumber++;
+    }
+    */
     @Test
     public void 단일스레드테스트() {
         for (int forIdx = 0; forIdx < 100000; forIdx++) {

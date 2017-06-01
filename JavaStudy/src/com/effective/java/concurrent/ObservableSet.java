@@ -36,14 +36,23 @@ public class ObservableSet<E> extends HashSet<E> {
             return observers.remove(observer);
         }
     }
-
+    /*
     private void notifyElementAdded(E element) {
         synchronized (observers) {
             for (SetObserver<E> observer : observers)
                 observer.added(this, element);
         }
     }
-
+    */
+    private void notifyElementAdded(E element) {
+      List<SetObserver<E>> snapshot = null;
+        synchronized (observers) {
+            snapshot = new ArrayList<SetObserver<E>> (observers);
+        }
+        for (SetObserver<E> observer : snapshot)
+            observer.added(this, element);
+    }
+    
     @Override
     public boolean add(E element) {
         boolean added = super.add(element);
