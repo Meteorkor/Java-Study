@@ -6,6 +6,7 @@ package com.effective.java.concurrent;
  * @since 2017. 5. 31.
  */
 public class EffectivelyImmutable {
+    //방지방법1, 객체 참조를 클래스 초기화시에 static필드에 저장
     {//객체 참조를 클래스 초기화시에 static필드에 저장
         DataTestClz1 localVar = new DataTestClz1("kim",11);
         firstSolv = localVar;
@@ -17,7 +18,7 @@ public class EffectivelyImmutable {
     }
 
     /**
-     * volatile 필드에 저장
+     * 방지방법3, volatile 필드에 저장
      * 
      * @since  2017. 5. 31.
      * @param name
@@ -32,4 +33,10 @@ public class EffectivelyImmutable {
         DataTestClz1 localdataClz1 = new DataTestClz1(name,number);
         dataClz1 = localdataClz1;
     }
+    
+    //방지방법4, final 필드 활용
+    {
+        finalVar = new DataTestClz1("lee", 22);
+    }
+    public final DataTestClz1 finalVar;
 }
