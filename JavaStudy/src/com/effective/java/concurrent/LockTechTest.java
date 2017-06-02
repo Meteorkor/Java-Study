@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -117,5 +118,57 @@ public class LockTechTest {
         }
         
     }
-
+   
+    public Object getLock(String data){
+        int key = data.hashCode()%LOCK_LEN;
+        if(key<0) key = (key) * -1;
+        return locks[key];
+    }
+    
+    
+    @Test
+    public void lockStriping() throws InterruptedException{
+        
+        ExecutorService executorService = Executors.newFixedThreadPool(1000);
+        for(int idx=0; idx<100000;idx++){
+            final int finalInt = idx;
+                executorService.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(1);
+                        } catch (InterruptedException ignore) {
+                        }
+                        synchronized(getLock(String.valueOf(finalInt))){
+//                        synchronized(map){
+                            map.put(String.valueOf(finalInt),String.valueOf(finalInt));    
+                        }
+                    }
+                });    
+            
+            
+            executorService.submit(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException ignore) {
+                    }
+                    Object obj = null;
+                    synchronized(getLock(String.valueOf(finalInt))){
+//                    synchronized(map){
+                        obj = map.get(String.valueOf(finalInt));    
+                    }
+                    
+                    System.out.println("obj : " + obj);
+                    
+                }
+            });    
+        }
+        
+        executorService.shutdown();
+        executorService.awaitTermination(1000, TimeUnit.SECONDS);
+        
+        System.out.println("map.size() : " + map.size());
+    }
 }
