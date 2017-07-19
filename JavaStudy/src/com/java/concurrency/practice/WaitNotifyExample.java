@@ -26,7 +26,7 @@ import java.util.LinkedList;
  * @since  2017. 7. 19.
  */
 public class WaitNotifyExample {
-
+    
     @Test
     public void 폴링() throws InterruptedException{
         Queue<String> q = new LinkedList<>();
