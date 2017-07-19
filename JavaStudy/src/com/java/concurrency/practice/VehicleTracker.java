@@ -14,6 +14,42 @@ package com.java.concurrency.practice;
 
 public abstract class VehicleTracker {
     
+    
+    
+    public VehicleTracker(String id) {
+        this.id = id;
+    }
+    /**
+     * 차량 ID
+     */
+    private String id;
+    protected int x=0;
+    protected int y=0;
+    
+    public int getX() {
+        return x;
+    }
+    public int getY() {
+        return y;
+    }
+    public String getId() {
+        return id;
+    }
+    
+    public abstract void move();
+    
+    public String getLocation(){
+        StringBuilder stb = new StringBuilder();
+        stb.append("x : ");
+        stb.append(x);
+        stb.append(" , ");
+        stb.append("y : ");
+        stb.append(x);
+        return stb.toString();
+    }
+    
+    
+
     public static class Taxi extends VehicleTracker{
 
         /**
@@ -83,38 +119,4 @@ public abstract class VehicleTracker {
         }
         
     }
-    
-    
-    public VehicleTracker(String id) {
-        this.id = id;
-    }
-    /**
-     * 차량 ID
-     */
-    private String id;
-    protected int x=0;
-    protected int y=0;
-    
-    public int getX() {
-        return x;
-    }
-    public int getY() {
-        return y;
-    }
-    public String getId() {
-        return id;
-    }
-    
-    public abstract void move();
-    
-    public String getLocation(){
-        StringBuilder stb = new StringBuilder();
-        stb.append("x : ");
-        stb.append(x);
-        stb.append(" , ");
-        stb.append("y : ");
-        stb.append(x);
-        return stb.toString();
-    }
-    
 }

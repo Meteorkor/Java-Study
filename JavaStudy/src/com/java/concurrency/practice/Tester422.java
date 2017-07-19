@@ -40,7 +40,6 @@ public class Tester422 {
         service.submit(getMover(map));
         service.submit(getMover(map));
         */
-        vehicleMoved(map);
         service.shutdown();
         boolean ret = service.awaitTermination(5, TimeUnit.SECONDS);
         System.out.println("ret : " + ret);
