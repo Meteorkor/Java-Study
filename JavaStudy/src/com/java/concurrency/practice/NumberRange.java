@@ -17,7 +17,7 @@ public class NumberRange {
     //의존성 조건 : lower <= upper
     private final AtomicInteger lower = new AtomicInteger(0);
     private final AtomicInteger upper = new AtomicInteger(0);
-    
+    /* 초기 */
     public void setLower(int i){
         //주의 - 안전하지 않은 비교문
         if(i > upper.get()){
@@ -33,6 +33,23 @@ public class NumberRange {
         }
         upper.set(i);
     }
+    
+    /* sync 
+    public synchronized void setLower(int i){
+        if(i > upper.get()){
+            throw new IllegalArgumentException("can't set lower to " + i + " > upper");
+        }
+        lower.set(i);
+    }
+    
+    public synchronized void setUpper(int i){
+        if(i < lower.get()){
+            throw new IllegalArgumentException("can't set upper to " + i + " > upper");
+        }
+        upper.set(i);
+    }
+    */
+    
     
     public boolean isInRange(int i){
         return (i >= lower.get() && i <= upper.get());
